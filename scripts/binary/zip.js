@@ -5,6 +5,7 @@ const path = require('path')
 const la = require('lazy-ass')
 const fs = require('fs')
 const filesize = require('filesize')
+const mv = require('mv')
 
 // prints disk usage numbers using "du" utility
 // available on Linux and Mac
@@ -125,8 +126,11 @@ const renameFolder = function (src) {
 
   console.log(`renaming ${src} to ${renamed}`)
 
-  return fs.promises.rename(src, renamed)
-  .then(() => renamed)
+  return new Promise((resolve, reject) => {
+    mv(src, renamed, (err) => {
+      err ? reject(err) : resolve(renamed)
+    })
+  })
 }
 
 // resolves with zipped filename
